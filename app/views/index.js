@@ -35,7 +35,8 @@ var Index = Mn.View.extend({
             title: val
         });
         this.collection.add(todo);
-    }
+    },
+    
 });
 
 

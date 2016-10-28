@@ -17515,6 +17515,7 @@
 	        });
 	        this.collection.add(todo);
 	    }
+
 	});
 
 	module.exports = Index;
@@ -17549,8 +17550,44 @@
 	        submit: '#submit'
 	    },
 
-	    triggers: {
-	        'click @ui.submit': 'add:todo'
+	    // triggers: {
+	    //     'click @ui.submit': 'add:todo'
+	    // },
+
+	    events: {
+	        'keyup @ui.input': 'handleEnterSubmit',
+	        'click @ui.submit': 'submit'
+	    },
+
+	    handleEnterSubmit: function handleEnterSubmit(e) {
+	        if (e.keyCode === 13) {
+	            //is enter key
+	            this.submit();
+	        }
+	    },
+
+	    submit: function submit() {
+	        //let one function handle submit
+	        var val = this.ui.input.val();
+	        if (this.validInput(val)) {
+	            this.triggerMethod('add:todo', this);
+	            this.clearInput();
+	        }
+	    },
+
+	    //input cannot be blank
+	    validInput: function validInput(val) {
+	        if (val) {
+	            val = String(val.trim());
+	            if (val.length > 0) {
+	                return true;
+	            }
+	        }
+	        return false;
+	    },
+
+	    clearInput: function clearInput() {
+	        this.ui.input[0].value = '';
 	    }
 
 	});
