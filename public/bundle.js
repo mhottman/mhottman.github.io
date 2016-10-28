@@ -17676,6 +17676,7 @@
 	        time: null
 	    },
 	    updateStatus: function updateStatus() {
+	        //this will change completed status
 	        console.log("this!", this);
 	    }
 	});

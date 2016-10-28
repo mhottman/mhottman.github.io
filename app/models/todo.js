@@ -11,6 +11,7 @@ var Todo = Bb.Model.extend({
         time: null
     },
     updateStatus: function() {
+        //this will change completed status
         console.log("this!", this);
     }
 });
