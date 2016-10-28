@@ -50,14 +50,30 @@
 	var Mn = __webpack_require__(4);
 	var $ = __webpack_require__(3);
 
+	var Index = __webpack_require__(6);
+	var Collection = __webpack_require__(15);
+
 	var app = new Mn.Application({
-	    region: '#app-root',
 	    onStart: function onStart() {
-	        console.log("init app");
+	        var index = new Index({
+	            collection: new Bb.Collection(testData)
+	        });
+	        index.render();
+	        index.triggerMethod('load');
 	    }
 	});
 
 	app.start();
+
+	var testData = [{
+	    title: 'First',
+	    completed: false,
+	    dueDate: null
+	}, {
+	    title: 'Second',
+	    completed: false,
+	    dueDate: null
+	}];
 
 /***/ },
 /* 1 */
@@ -17456,6 +17472,202 @@
 
 	}));
 	//# sourceMappingURL=./backbone.radio.js.map
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Mn = __webpack_require__(4);
+	var root = __webpack_require__(7);
+
+	var FormView = __webpack_require__(8);
+	var ListView = __webpack_require__(10);
+	var TodoModel = __webpack_require__(14);
+
+	var Index = Mn.View.extend({
+	    template: root,
+	    el: '#app-root',
+
+	    regions: {
+	        form: '#form',
+	        list: '#list'
+	    },
+
+	    onLoad: function onLoad() {
+	        //render sub views on load
+	        var form = new FormView({
+	            model: new TodoModel()
+	        });
+	        var list = new ListView({
+	            collection: this.collection
+	        });
+
+	        this.showChildView('form', form);
+	        this.showChildView('list', list);
+	    },
+
+	    onChildviewAddTodo: function onChildviewAddTodo(child) {
+	        var val = child.ui.input[0].value;
+	        var todo = new TodoModel({
+	            title: val
+	        });
+	        this.collection.add(todo);
+	    }
+	});
+
+	module.exports = Index;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	module.exports = function(obj){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	with(obj||{}){
+	__p+='<div class="main">\n    <h1>Todo App!</h1>\n\n    <div id="form"></div>\n    <div id="list"></div>\n\n</div>\n';
+	}
+	return __p;
+	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Mn = __webpack_require__(4);
+	var formTemplate = __webpack_require__(9);
+
+	var Form = Mn.View.extend({
+	    template: formTemplate,
+
+	    ui: {
+	        input: '#title',
+	        submit: '#submit'
+	    },
+
+	    triggers: {
+	        'click @ui.submit': 'add:todo'
+	    }
+
+	});
+
+	module.exports = Form;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = function(obj){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	with(obj||{}){
+	__p+='<div class="form">\n    <h3>I am a form!</h3>\n    <input type="text" id="title" class="form-input"/>\n    <button class="button submit" id="submit">Submit</button>\n</div>\n';
+	}
+	return __p;
+	};
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Mn = __webpack_require__(4);
+
+	var ListTemplate = __webpack_require__(11);
+	var ListItem = __webpack_require__(12);
+
+	var List = Mn.CollectionView.extend({
+	    tagName: 'ul',
+	    childView: ListItem
+	});
+
+	module.exports = List;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	module.exports = function(obj){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	with(obj||{}){
+	__p+='<ul></ul>\n';
+	}
+	return __p;
+	};
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Mn = __webpack_require__(4);
+	var todoTemplate = __webpack_require__(13);
+
+	var Item = Mn.View.extend({
+	    tagName: 'li',
+	    template: todoTemplate
+	});
+
+	module.exports = Item;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(_) {module.exports = function(obj){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	with(obj||{}){
+	__p+='<div class="item-inner">\n    <h1>'+
+	((__t=( title ))==null?'':_.escape(__t))+
+	'</h1>\n</div>\n';
+	}
+	return __p;
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Bb = __webpack_require__(1);
+
+	var Todo = Bb.Model.extend({
+	    defaults: {
+	        completed: false,
+	        title: '',
+	        dueDate: null,
+	        time: null
+	    },
+	    updateStatus: function updateStatus() {
+	        console.log("this!", this);
+	    }
+	});
+
+	module.exports = Todo;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Bb = __webpack_require__(1);
+
+	var List = new Bb.Collection({
+	    items: []
+	});
+
+	module.exports = List;
 
 /***/ }
 /******/ ]);
