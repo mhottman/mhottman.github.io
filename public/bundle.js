@@ -56,7 +56,7 @@
 	var app = new Mn.Application({
 	    onStart: function onStart() {
 	        var index = new Index({
-	            collection: new Bb.Collection(testData)
+	            collection: new Bb.Collection([])
 	        });
 	        index.render();
 	        index.triggerMethod('load');
@@ -64,16 +64,6 @@
 	});
 
 	app.start();
-
-	var testData = [{
-	    title: 'First',
-	    completed: false,
-	    dueDate: null
-	}, {
-	    title: 'Second',
-	    completed: false,
-	    dueDate: null
-	}];
 
 /***/ },
 /* 1 */

@@ -11,7 +11,7 @@ var Collection = require('./collections/list');
 var app = new Mn.Application({
     onStart: function() {
         var index = new Index({
-            collection: new Bb.Collection(testData)
+            collection: new Bb.Collection([])
         });
         index.render();
         index.triggerMethod('load');
@@ -20,18 +20,3 @@ var app = new Mn.Application({
 
 
 app.start();
-
-
-
-var testData = [
-    {
-        title: 'First',
-        completed: false,
-        dueDate: null
-    },
-    {
-        title: 'Second',
-        completed: false,
-        dueDate: null
-    }
-];
