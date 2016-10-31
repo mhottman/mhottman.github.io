@@ -49,11 +49,11 @@ body {
 }
 
 .form .btn {
-    width: 90%;
+    width: 95%;
     text-align: center;
 }
 .form .btn i {
-    padding: 3px;
+    font-size: 17px;
 }
 
 /*Override Some Materialize Styles*/
