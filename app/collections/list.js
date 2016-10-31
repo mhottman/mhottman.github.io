@@ -3,8 +3,8 @@
 var Bb = require('backbone');
 
 
-var List = new Bb.Collection({
-    items: []
+var List = new Bb.Collection([], {
+    comparator: 'dueDate'
 });
 
 

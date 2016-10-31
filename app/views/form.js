@@ -9,7 +9,8 @@ var Form = Mn.View.extend({
 
     ui: {
         input: '#title',
-        submit: '#submit'
+        date: '#date',
+        submit: '#submit',
     },
 
     // triggers: {
@@ -25,14 +26,19 @@ var Form = Mn.View.extend({
         if (e.keyCode === 13) { //is enter key
             this.submit();
         }
+
+        //show hide disable button
+        //if input has content, enable button
+        this.showHideSubmit(!e.target.value.trim());
     },
 
     submit: function() {
         //let one function handle submit
-        var val = this.ui.input.val()
+        var val = this.ui.input.val();
         if (this.validInput(val)) {
             this.triggerMethod('add:todo', this);
             this.clearInput();
+            this.showHideSubmit(true);
         }
     },
 
@@ -50,6 +56,15 @@ var Form = Mn.View.extend({
 
     clearInput: function() {
         this.ui.input[0].value = '';
+        this.ui.date[0].value = '';
+    },
+
+    showHideSubmit: function(shouldDisable) {
+        if (shouldDisable) {
+            this.ui.submit.addClass('disabled');
+        } else {
+            this.ui.submit.removeClass('disabled');
+        }
     }
 
 

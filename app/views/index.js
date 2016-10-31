@@ -2,6 +2,7 @@
 
 var Mn = require('backbone.marionette');
 var root = require('../templates/root.html');
+var moment = require('moment');
 
 var FormView = require('./form');
 var ListView = require('./list');
@@ -27,16 +28,54 @@ var Index = Mn.View.extend({
 
         this.showChildView('form', form);
         this.showChildView('list', list);
+
+
+        this.setupMaterialize();
+
     },
 
     onChildviewAddTodo: function(child) {
-        var val = child.ui.input[0].value;
+        var val = child.ui.input.val();
+        var date = this.normalizeDate(child.ui.date.val());
         var todo = new TodoModel({
-            title: val
+            title: val,
+            dueDate: date,
+            dueDateString: this.getDateString(date)
         });
-        this.collection.add(todo);
+
+        this.collection.unshift(todo);
+
+        // this.collection.sort();
     },
-    
+
+    onChildviewRemoveTodo: function(child) {
+        var model = this.collection.remove(child.model);
+    },
+
+
+    normalizeDate: function(date) {
+
+        if (!date) {
+            date = moment()
+        }
+        if (typeof date === 'string') {
+            date = moment(new Date(date));
+        }
+
+        return date;
+    },
+
+    getDateString: function(date) {
+        var rightNow = moment();
+        return (moment(date).isSameOrBefore(rightNow)) ? 'now' : moment(date).fromNow();
+    },
+
+
+    setupMaterialize: function() {
+        $('.datepicker').pickadate({
+            min: new Date()
+        });
+    }
 });
 
 

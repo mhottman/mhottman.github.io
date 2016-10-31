@@ -7,12 +7,14 @@ var Todo = Bb.Model.extend({
     defaults: {
         completed: false,
         title: '',
-        dueDate: null,
-        time: null
+        dueDate: new Date(),
+        dueDateString: ''
     },
     updateStatus: function() {
-        //this will change completed status
-        console.log("this!", this);
+        this.set('completed', !this.get('completed'));
+    },
+    remove: function() {
+
     }
 });
 

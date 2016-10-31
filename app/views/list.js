@@ -7,7 +7,9 @@ var ListItem = require('./item');
 
 var List = Mn.CollectionView.extend({
     tagName: 'ul',
-    childView: ListItem
+    className: 'item-list',
+    childView: ListItem,
+    comparator: 'dueDate'
 });
 
 

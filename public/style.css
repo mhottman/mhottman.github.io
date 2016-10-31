@@ -1,0 +1,145 @@
+
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: 0;
+	width: 100%;
+}
+
+
+.main {
+    width: 800px;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-400px);
+    height: 100vh;
+}
+
+.main .header {
+    text-align: center;
+}
+
+.content {
+    width: 100%;
+}
+#form {
+    width: 30%;
+    float: left;
+}
+#list {
+    width: 70%;
+    float: left;
+}
+
+.form .form-input {
+    font-size: 25px;
+    margin-bottom: 0 !important;
+}
+.form .input-container {
+    width: 100%;
+    padding: 10px;
+}
+
+.form .btn {
+    width: 90%;
+    text-align: center;
+}
+.form .btn i {
+    padding: 3px;
+}
+
+/*Override Some Materialize Styles*/
+.input-field label {
+     left: inherit;
+}
+.input-container .select-dropdown {
+    margin-bottom: 0;
+}
+
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+    overflow: scroll;
+    height: 560px;
+    box-shadow: 1px 2px 5px rgb(124, 124, 124), 1px 2px 3px rgb(147, 147, 147);
+}
+
+.item-list .item {
+    padding: 10px;
+}
+
+.item.completed {
+    color: #4CAF50;
+    text-decoration: line-through;
+}
+
+.item-inner {
+    border-bottom: solid 1px rgb(134, 134, 134);
+    position: relative;
+}
+
+.item-inner .icon {
+    float: left;
+    padding: 13px;
+    font-size: 20px;
+    opacity: 1;
+    transition: all 300ms ease-in-out;
+    cursor: pointer;
+}
+
+.item-inner .icon.remove {
+    float: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #F44336;
+    /*transform: scale(1.3);*/
+    transition: all 300ms ease-in;
+
+}
+.item-inner .icon.remove:hover {
+    transform: scale(1.3);
+    transition: all 300ms ease-in;
+}
+
+.item-inner .icon.animate {
+    transform: scale(1.9);
+    transition: all 300ms ease-in-out;
+}
+/* Unchecked */
+.item-inner .icon.unchecked {
+    color: #5e5e5e;
+}
+/* Checked */
+.item-inner .icon.checked {
+    color: #4CAF50;
+}
+
+.item-inner .title {
+    margin: 0;
+    font-size: 25px;
+    padding: 7px;
+    margin-bottom: 20px;
+    margin-right: 35px;
+    margin-left: 41px;
+}
+
+.item-inner .due-date {
+    margin: 0;
+    position: absolute;
+    left: 10px;
+    bottom: 0;
+    color: rgb(161, 161, 161);
+    font-size: 14px;
+}
