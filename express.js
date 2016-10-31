@@ -4,11 +4,11 @@ const express = require('express'),
     app = express(),
     path = require('path');
 
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '/')));
 
 app.use(function(req, res, next) {
     res.renderHTML = function(file) {
-        res.sendFile(path.resolve(__dirname, './public/' + file + '.html'));
+        res.sendFile(path.resolve(__dirname, './' + file + '.html'));
     };
     next();
 });

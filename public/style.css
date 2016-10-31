@@ -58,7 +58,7 @@ body {
 
 /*Override Some Materialize Styles*/
 .input-field label {
-     left: inherit;
+    /*left: inherit;*/
 }
 .input-container .select-dropdown {
     margin-bottom: 0;
