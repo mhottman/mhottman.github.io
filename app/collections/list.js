@@ -4,7 +4,7 @@ var Bb = require('backbone');
 
 
 var List = new Bb.Collection([], {
-    comparator: 'dueDate'
+    comparator: 'dueDate',
 });
 
 

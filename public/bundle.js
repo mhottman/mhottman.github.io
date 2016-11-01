@@ -57,9 +57,7 @@
 	var app = new Mn.Application({
 	    onStart: function onStart() {
 	        var index = new Index({
-	            collection: new Bb.Collection([], {
-	                comparator: 'dueDate'
-	            })
+	            collection: Collection
 	        });
 	        index.render();
 	        index.triggerMethod('load');
@@ -29965,6 +29963,7 @@
 
 	var FormView = __webpack_require__(119);
 	var ListView = __webpack_require__(121);
+	var FilterView = __webpack_require__(127);
 	var TodoModel = __webpack_require__(125);
 
 	var Index = Mn.View.extend({
@@ -29972,23 +29971,70 @@
 	    el: '#app-root',
 
 	    regions: {
+	        filters: '#filters',
 	        form: '#form',
 	        list: '#list'
 	    },
 
+	    components: {
+	        list: {},
+	        form: {},
+	        filters: {}
+	    },
+
+	    filterState: 'incomplete',
+
+	    toggleFilterState: function toggleFilterState() {
+	        var state = this.filterState;
+	        this.filterState = state === 'incomplete' ? 'finished' : 'incomplete';
+	    },
+
+	    getFilterState: function getFilterState() {
+	        return this.filterState;
+	    },
+
+	    onChildviewSetFilterState: function onChildviewSetFilterState() {
+	        this.toggleFilterState();
+	        this.components.list.toggleFilter(this.getFilterState());
+	    },
+
 	    onLoad: function onLoad() {
 	        //render sub views on load
-	        var form = new FormView({
-	            model: new TodoModel()
-	        });
+	        this.renderList();
+	        this.renderForm();
+	        this.renderFilters();
+
+	        this.setupMaterialize();
+	    },
+
+	    renderList: function renderList() {
 	        var list = new ListView({
 	            collection: this.collection
 	        });
-
-	        this.showChildView('form', form);
 	        this.showChildView('list', list);
 
-	        this.setupMaterialize();
+	        //set global on object for later use
+	        this.components.list = list;
+	    },
+
+	    renderForm: function renderForm() {
+	        var form = new FormView({
+	            model: new TodoModel()
+	        });
+	        this.showChildView('form', form);
+
+	        //set global on object for later use
+	        this.components.form = form;
+	    },
+
+	    renderFilters: function renderFilters() {
+	        var filters = new FilterView({
+	            collection: this.collection
+	        });
+	        this.showChildView('filters', filters);
+
+	        //set global on object for later use
+	        this.components.filters = filters;
 	    },
 
 	    onChildviewAddTodo: function onChildviewAddTodo(child) {
@@ -30002,11 +30048,21 @@
 
 	        this.collection.unshift(todo);
 
-	        // this.collection.sort();
+	        //sorted by due date, with soonest due at top
+	        this.collection.sort();
 	    },
 
 	    onChildviewRemoveTodo: function onChildviewRemoveTodo(child) {
 	        var model = this.collection.remove(child.model);
+	    },
+
+	    onChildviewUpdateToggleStatus: function onChildviewUpdateToggleStatus(child) {
+	        //used to filter out checked todos
+	        console.log("child", child);
+	        child.handleSwipeOut();
+	        setTimeout(function () {
+	            this.components.list.render();
+	        }.bind(this), 300);
 	    },
 
 	    normalizeDate: function normalizeDate(date) {
@@ -30042,7 +30098,7 @@
 	module.exports = function(obj){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 	with(obj||{}){
-	__p+='<div class="main">\n    <h1 class="header">Todo List</h1>\n    <div class="content">\n        <div id="form"></div>\n        <div id="list"></div>\n    </div>\n</div>\n';
+	__p+='<div class="main">\n    <h1 class="header">Todo List</h1>\n    <div id="filters"></div>\n    <div class="content">\n        <div id="form"></div>\n        <div id="list"></div>\n    </div>\n</div>\n';
 	}
 	return __p;
 	};
@@ -44544,7 +44600,7 @@
 	module.exports = function(obj){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 	with(obj||{}){
-	__p+='<div class="form">\n\n    <div class="input-container input-field">\n        <input type="text" id="title" class="form-input"/>\n        <label for="title">Title</label>\n    </div>\n\n    <div class="input-container input-field">\n        <input type="date" class="datepicker" id="date">\n        <label for="title">Date</label>\n    </div>\n\n    <button class="btn waves-effect waves-light disabled" id="submit" name="action">Submit\n        <i class="fa fa-plus-circle"></i>\n    </button>\n</div>\n';
+	__p+='<div class="form">\n\n    <div class="input-container input-field">\n        <input type="text" id="title" class="form-input"/>\n        <label for="title">Title</label>\n    </div>\n\n    <div class="input-container input-field">\n        <input type="date" class="datepicker" id="date">\n        <label for="title">Date</label>\n    </div>\n\n    <button class="btn waves-effect waves-light disabled" id="submit" name="action">Submit\n        <i class="fa fa-plus-circle"></i>\n    </button>\n\n</div>\n';
 	}
 	return __p;
 	};
@@ -44565,7 +44621,25 @@
 	    tagName: 'ul',
 	    className: 'item-list',
 	    childView: ListItem,
-	    comparator: 'dueDate'
+	    comparator: 'dueDate',
+
+	    showIncomplete: function showIncomplete(child, index, collection) {
+	        return !child.get('completed');
+	    },
+
+	    showFinished: function showFinished(child, index, collection) {
+	        return child.get('completed');
+	    },
+
+	    filter: function filter(child, index, collection) {
+	        return this.showIncomplete.apply(this, arguments);
+	    },
+
+	    toggleFilter: function toggleFilter(state) {
+	        state = state.substring(0, 1).toUpperCase() + state.substring(1, state.length);
+	        this.setFilter(this['show' + state]);
+	    }
+
 	});
 
 	module.exports = List;
@@ -44606,8 +44680,21 @@
 	    },
 
 	    handleToggle: function handleToggle(e) {
+	        this.runProcess();
+	        this.handleAnimate();
+	        this.triggerMethod('update:toggle:status', this);
+	    },
+
+	    onBeforeAttach: function onBeforeAttach() {
+	        this.runProcess();
+	    },
+
+	    onDomRefresh: function onDomRefresh() {
+	        this.runProcess();
+	    },
+
+	    runProcess: function runProcess() {
 	        this.model.updateStatus();
-	        this.toggleStrikethrough();
 	        this.toggleCheck();
 	    },
 
@@ -44615,18 +44702,16 @@
 	        if (this.model.get('completed')) {
 	            this.el.classList.add('completed');
 	            this.ui.statusIcon.removeClass('fa-square-o');
+	            this.ui.statusIcon.removeClass('unchecked');
 	            this.ui.statusIcon.addClass('fa-check-square-o');
-	            this.handleAnimate();
+	            this.ui.statusIcon.addClass('checked');
 	        } else {
 	            this.el.classList.remove('completed');
 	            this.ui.statusIcon.removeClass('fa-check-square-o');
+	            this.ui.statusIcon.removeClass('checked');
+	            this.ui.statusIcon.addClass('unchecked');
 	            this.ui.statusIcon.addClass('fa-square-o');
 	        }
-	    },
-
-	    toggleStrikethrough: function toggleStrikethrough() {
-	        this.ui.statusIcon.toggleClass('checked');
-	        this.ui.statusIcon.toggleClass('unchecked');
 	    },
 
 	    handleAnimate: function handleAnimate() {
@@ -44638,6 +44723,13 @@
 
 	    handleRemove: function handleRemove() {
 	        this.triggerMethod('remove:todo', this);
+	    },
+
+	    handleSwipeOut: function handleSwipeOut() {
+	        this.$el.addClass('fadeout');
+	        setTimeout(function () {
+	            this.$el.addClass('fadeout');
+	        }, 300);
 	    }
 	});
 
@@ -44697,6 +44789,58 @@
 	});
 
 	module.exports = List;
+
+/***/ },
+/* 127 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Mn = __webpack_require__(4);
+	var template = __webpack_require__(128);
+
+	var Filters = Mn.View.extend({
+	    template: template,
+	    ui: {
+	        incomplete: '#incomplete',
+	        finished: '#finished'
+	    },
+	    events: {
+	        'click @ui.incomplete': 'handleToggle',
+	        'click @ui.finished': 'handleToggle'
+	    },
+
+	    onAttach: function onAttach() {
+	        this.setDisabled('incomplete');
+	    },
+
+	    handleToggle: function handleToggle(e) {
+	        this.setDisabled(e.currentTarget.id);
+	        this.triggerMethod('set:filter:state');
+	    },
+
+	    setDisabled: function setDisabled(uiItem) {
+	        this.ui[uiItem].addClass('disabled');
+	        var notCurr = uiItem === 'incomplete' ? 'finished' : 'incomplete';
+	        this.ui[notCurr].removeClass('disabled');
+	    }
+
+	});
+
+	module.exports = Filters;
+
+/***/ },
+/* 128 */
+/***/ function(module, exports) {
+
+	module.exports = function(obj){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	with(obj||{}){
+	__p+='<div class="filter-box">\n    <button class="toggle btn waves-effect waves-light" id="incomplete">\n        Incomplete\n        <i class="fa fa-plus-circle"></i>\n    </button>\n    <button class="toggle btn waves-effect waves-light" id="finished">\n        Finished\n        <i class="fa fa-plus-circle"></i>\n    </button>\n</div>\n';
+	}
+	return __p;
+	};
+
 
 /***/ }
 /******/ ]);

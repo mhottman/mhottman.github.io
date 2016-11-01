@@ -12,9 +12,7 @@ var Collection = require('./collections/list');
 var app = new Mn.Application({
     onStart: function() {
         var index = new Index({
-            collection: new Bb.Collection([], {
-                comparator: 'dueDate'
-            })
+            collection: Collection
         });
         index.render();
         index.triggerMethod('load');

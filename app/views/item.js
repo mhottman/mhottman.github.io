@@ -17,8 +17,21 @@ var Item = Mn.View.extend({
     },
 
     handleToggle: function(e) {
+        this.runProcess();
+        this.handleAnimate();
+        this.triggerMethod('update:toggle:status', this);
+    },
+
+    onBeforeAttach: function() {
+        this.runProcess();
+    },
+
+    onDomRefresh: function() {
+        this.runProcess();
+    },
+
+    runProcess: function() {
         this.model.updateStatus();
-        this.toggleStrikethrough();
         this.toggleCheck();
     },
 
@@ -26,18 +39,16 @@ var Item = Mn.View.extend({
         if (this.model.get('completed')) {
             this.el.classList.add('completed')
             this.ui.statusIcon.removeClass('fa-square-o');
+            this.ui.statusIcon.removeClass('unchecked');
             this.ui.statusIcon.addClass('fa-check-square-o');
-            this.handleAnimate();
+            this.ui.statusIcon.addClass('checked');
         } else {
             this.el.classList.remove('completed')
             this.ui.statusIcon.removeClass('fa-check-square-o');
+            this.ui.statusIcon.removeClass('checked');
+            this.ui.statusIcon.addClass('unchecked');
             this.ui.statusIcon.addClass('fa-square-o');
         }
-    },
-
-    toggleStrikethrough: function() {
-        this.ui.statusIcon.toggleClass('checked');
-        this.ui.statusIcon.toggleClass('unchecked');
     },
 
     handleAnimate: function() {
@@ -49,6 +60,13 @@ var Item = Mn.View.extend({
 
     handleRemove: function() {
         this.triggerMethod('remove:todo', this);
+    },
+
+    handleSwipeOut: function() {
+        this.$el.addClass('fadeout');
+        setTimeout(function() {
+            this.$el.addClass('fadeout');
+        }, 300);
     }
 });
 
